@@ -2,11 +2,6 @@
 Clone of 2048 game.
 """
 
-import user34_BBrd1qseMF_2 as test_merge
-import user34_YK0tFwIrdd_6 as test_2048
-
-import poc_2048_gui
-
 import random
 
 
@@ -23,10 +18,13 @@ OFFSETS = {UP: (1, 0),
            LEFT: (0, 1),
            RIGHT: (0, -1)}
 
-def zeroes_to_the_end(a, b):
-    if a is 0:
+def zeroes_to_the_end(first, second):
+    """
+    Sorting function that considers 0 higher than any number
+    """
+    if first is 0:
         return 1
-    elif b is 0:
+    elif second is 0:
         return -1
     else:
         return 0
@@ -57,6 +55,10 @@ class TwentyFortyEight:
         self.setup_borders()
 
     def setup_borders(self):
+        """
+        Define the borders of the board
+        """
+
         height = self.get_grid_height()
         width = self.get_grid_width()
 
@@ -78,6 +80,9 @@ class TwentyFortyEight:
         return empty_tiles
 
     def _get_baseline_for_direction(self, direction):
+        """
+        Return border at movement direction
+        """
         if direction is UP:
             return self._top
         elif direction is RIGHT:
@@ -91,7 +96,7 @@ class TwentyFortyEight:
         """
         Reset the game so the grid is empty.
         """
-        self._grid = cells = [ [0 for col in range(self._width)] for row in range(self._height)]
+        self._grid = [ [0 for dummy_col in range(self._width)] for dummy_row in range(self._height)]
 
     def __str__(self):
         """
@@ -117,6 +122,8 @@ class TwentyFortyEight:
         a new tile if any tiles moved.
         """
 
+        tile_changed = False
+
         for (row, col) in self._get_baseline_for_direction(direction):
             (row_offset, col_offset) = OFFSETS[direction]
 
@@ -127,9 +134,15 @@ class TwentyFortyEight:
 
             (merging_row, merging_col) = (row, col)
             for value in merged:
+                if self.get_tile(merging_row, merging_col) is not value:
+                    tile_changed = True
+
                 self.set_tile(merging_row, merging_col, value)
                 merging_row += row_offset
                 merging_col += col_offset
+
+        if tile_changed:
+            self.new_tile()
 
     def new_tile(self):
         """
@@ -158,6 +171,3 @@ class TwentyFortyEight:
             return self._grid[row][col]
         except IndexError:
             return None
-
-
-poc_2048_gui.run_gui(TwentyFortyEight(4, 4))
