@@ -116,19 +116,15 @@ class TwentyFortyEight:
         Move all tiles in the given direction and add
         a new tile if any tiles moved.
         """
+
         for (row, col) in self._get_baseline_for_direction(direction):
-            print (direction, row, col)
             (row_offset, col_offset) = OFFSETS[direction]
 
-            (current_row, current_col) = (row, col)
-            line = [self.get_tile(current_row, current_col)]
-            while line[-1] is not None:
-                current_row += row_offset
-                current_col += col_offset
-                line.append(self.get_tile(current_row, current_col))
-            line.pop()
+            limit = self.get_grid_width() if direction in (RIGHT, LEFT) else self.get_grid_height()
+            line = [ self.get_tile(row + (position * row_offset), col + (position * col_offset)) for position in range(limit) ]
 
             merged = merge(line)
+
             (merging_row, merging_col) = (row, col)
             for value in merged:
                 self.set_tile(merging_row, merging_col, value)
@@ -164,7 +160,4 @@ class TwentyFortyEight:
             return None
 
 
-#poc_2048_gui.run_gui(TwentyFortyEight(4, 4))
-
-test_merge.run_test(merge)
-test_2048.run_test(TwentyFortyEight)
+poc_2048_gui.run_gui(TwentyFortyEight(4, 4))
